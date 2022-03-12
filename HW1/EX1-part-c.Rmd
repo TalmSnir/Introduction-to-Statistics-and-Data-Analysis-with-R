@@ -1,0 +1,136 @@
+# Ex 1- Part C 
+
+## Part 1  
+
+installation of R and Rstudio!  
+
+## Part 2
+
+### Question 1
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+glimpse(penguins)
+```
+
+* the penguins table contains measurements data for 344 penguins, from 3 different islands according to 8 different attributes as described in the columns:  
+the columns descirbe the attributes(labels) of the penguins:  
+    * species 
+    * island 
+    * bill leangth in mm 
+    * bill depth in mm 
+    * flipper length in mm 
+    * body masss in grams 
+    * sex 
+    * year  
+
+fct=categorial variable ; species,island and sex.  
+dbl=numeric variable ; bill depth in mm.  
+int=integer variable ; flipper length in mm,body mass in grams and year.  
+
+the rows describe the values of the attributes - each row represents the data of one penguin in the study.
+
+### Question 2
+```{r}
+head(penguins)
+tail(penguins)
+View(penguins)
+penguins
+```
+
+#### a.
+a.1  
+[view](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/View) - Invoke a spreadsheet-style data viewer on a matrix-like R object.  
+a.2  
+[head](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/head)- Returns the first or last parts (depends on the `n` argument) of a vector, matrix, table, data frame or function. the default will return the first 6 rows.  
+a.3  
+[tail](https://www.rdocumentation.org/packages/rotations/versions/1.6.1/topics/tail) - Returns the first or last parts (depends on the `n` argument) of a vector, matrix, table, data frame or function. the default will return the last 6 rows.  
+a.4  
+[glimpse](https://www.rdocumentation.org/packages/dplyr/versions/0.3/topics/glimpse)- Get a glimpse of your data. (This is like a transposed version of print: columns run down the page, and data runs across. This makes it possible to see every column in a data frame ).    
+a.5  
+writing `penguins` in the console will show the whole penguin's table in the console view.
+
+#### b.
+b.1  
+every row in the table describes the values of the corresponding attribute for the sampled penguin.  
+b.2  
+island variable describes the location from which the samples penguin has came from.
+b.3  
+species variable describes the breed of the samples penguin.  
+
+### Question 3    
+>`%>% is called the forward pipe operator in R. It provides a mechanism for chaining commands with a new forward-pipe operator, %>%. This operator will forward a value, or the result of an expression, into the next function call/expression.`
+>[count](https://www.rdocumentation.org/packages/dplyr/versions/0.3/topics/count) - Count the number of rows in each group.  
+```{r}
+penguins %>%
+count(island)
+penguins %>%
+count(sex)
+```
+
+#### a.  
+a.1  
+number of islands in the data - **3** .  
+a.2  
+male penguins- **168**.  
+a.3  
+observations of penguins that lack information about sex- **11**.
+   
+## Part 3  
+```{r}
+ggplot(data = penguins,
+aes(x = bill_length_mm,
+y = flipper_length_mm,
+color = species)) +
+
+geom_point()
+```
+
+#### a  
+a.1  
+the meaning of the warning message is that there are two rows in the data that are missing the values for bill_length_mm or flipper_length_mm - they are represented in the data as NA and thus removed from the plot.  
+(if the axes are set manually and the data falls out of range the warning message will appear accordingly).   
+the ggplot funciton automaticlly removes them from the plot due to lack of data.
+
+we can find the above rows as such:  
+```{r}
+which(is.na(
+    penguins[, c("flipper_length_mm", "bill_length_mm")]),
+    arr.ind = TRUE)
+```
+> we can see that the rows with the missing values are: 4 and 272.  
+
+a.2  
+
+the plot shows the relation between the bill_length_mm and the flipper_length_mm for each species.  
+we can conclude from the location of the plots and colors that their is a correlation between the flipper length and the beak(bill) length -  
+the longer the flipper is thus the longer the beak is.  
+more over, we can see that the `Gentoo` penguins have the most elongated flipper and bill and the `Adelle` and `Chinstrap` have approximly the same flipper length but the `Chinstrap` has a longer bill.  
+
+a.3 
+
+* [aes](https://www.rdocumentation.org/packages/ggplot2/versions/3.3.5/topics/aes) - Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms. Aesthetic mappings can be set in ggplot() and in individual layers.  
+* [ggplot](https://www.rdocumentation.org/packages/ggplot2/versions/3.3.5/topics/ggplot) - initializes a ggplot object. It can be used to declare the input data frame for a graphic and to specify the set of plot aesthetics intended to be common throughout all subsequent layers unless specifically overridden.  
+* [geom_point](https://www.rdocumentation.org/packages/ggplot2/versions/3.3.5/topics/geom_point) - The point geom is used to create scatterplots.  
+
+a.4  
+
+```{r}
+ggplot(data = penguins,
+aes(x = bill_length_mm,
+y = bill_depth_mm,
+color = island)) +
+
+geom_point()
+```  
+
+a.5  
+The graph describes the relation between bill size (depth and length) and the island in which the penguin live.
+It can be seen that most of the penguins from `Torgersen` island have shorter bill length and longer bill depth compared to others.
+Furthermore, The measurements of penguin's bill from other islands are more dispersed (bigger variance) than in `Torgersen` island.   
+[It is known that penguins with a long and thin bill are fish eaters and the ones with the short and wide bill are krill eaters](https://seaworld.org/animals/all-about/penguins/physical-characteristics/),  
+so we can assume according to the plot, that the pengnuins in `Biscoe` island are mostly fish eaters , the penguin in and `Dream` island are mostly krill eaters and the penguins in `Torgersen` are krill eaters.
+  
+More over it is possible that in `Dream` and `Torgerse` islands the penguins are of different species thus have different bill sizes.
+Also We should take into consideration that differences among islands could be accounted for by variables like sex; in some species the male penguin has longer bill than the female. with that said the distribution of male vs female also effects greatly on the plot. 
+
